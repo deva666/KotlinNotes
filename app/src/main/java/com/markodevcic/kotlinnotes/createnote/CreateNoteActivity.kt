@@ -35,7 +35,7 @@ class CreateNoteActivity : AppCompatActivity() {
 		val note = Note.newNote()
 		note.title = titleText.text.toString()
 		note.note = contentText.text.toString()
-		realm.executeTransaction { r ->
+		realm.executeTransactionAsync { r ->
 			r.copyToRealmOrUpdate(note)
 		}
 		realm.close()

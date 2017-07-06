@@ -10,7 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
+import com.markodevcic.kotlinnotes.utils.launchActivity
+import com.markodevcic.kotlinnotes.viewnote.ViewNoteActivity
 import org.jetbrains.anko.*
+import java.text.DateFormat
 import java.util.*
 
 class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -20,9 +23,13 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	val favorite = itemView.find<ImageView>(R.id.notes_item_favorite)
 
 	fun bind(note: Note) {
+		itemView.setOnClickListener {
+			itemView.context.launchActivity<ViewNoteActivity>(ViewNoteActivity.KEY_NOTE_ID, note.id)
+		}
 		titleText.text = note.title
 		contentText.text = note.note
-		dateText.text = Date(note.createdAt).toString()
+		val formatter = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
+		dateText.text = formatter.format(Date(note.createdAt))
 		if (note.isFavorite)
 			favorite.visibility = View.VISIBLE
 		else
@@ -43,16 +50,18 @@ class NotesUi : AnkoComponent<ViewGroup> {
 					orientation = LinearLayout.HORIZONTAL
 
 					textView {
-						textSize = 16f
+						textSize = 18f
 						id = R.id.notes_item_title
 						textColor = ContextCompat.getColor(ui.ctx, android.R.color.black)
-					}.lparams(width = matchParent, height = wrapContent)
+					}.lparams(width = wrapContent, height = wrapContent)
 
 					imageView {
 						id = R.id.notes_item_favorite
 						imageResource = android.R.drawable.btn_star
 					}.lparams {
 						leftMargin = dip(12)
+						width = 35
+						height = 35
 					}
 
 					textView {

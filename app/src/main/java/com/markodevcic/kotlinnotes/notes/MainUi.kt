@@ -26,6 +26,7 @@ class MainUi(private val notesAdapter: NotesAdapter) : AnkoComponent<MainActivit
 				appBarLayout {
 					toolbar {
 						popupTheme = R.style.AppTheme_PopupOverlay
+						id = R.id.main_toolbar
 						backgroundResource = R.color.colorPrimary
 						setTitleTextColor(ContextCompat.getColor(ui.ctx, R.color.primary_text_default_material_dark))
 						title = "Notes"

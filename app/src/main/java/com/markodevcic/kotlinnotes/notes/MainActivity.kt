@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.RadioGroup
+import android.widget.Toolbar
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
 import io.realm.Realm
 import io.realm.RealmResults
-import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,8 +20,12 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
 		mainUi = MainUi(NotesAdapter(listOf()))
 		mainUi.setContentView(this)
+
+		val toolbar = find<Toolbar>(R.id.main_toolbar)
+		setActionBar(toolbar)
 
 		realm = Realm.getDefaultInstance()
 		notes = realm.where(Note::class.java).findAllAsync()
@@ -36,7 +42,36 @@ class MainActivity : AppCompatActivity() {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		val id = item.itemId
 
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_filter) {
+			alert {
+				customView {
+					radioGroup {
+						orientation = RadioGroup.VERTICAL
+						radioButton {
+							text = "Favorites"
+							setOnClickListener {
+								notes.removeAllChangeListeners()
+								notes = realm.where(Note::class.java)
+										.equalTo("isFavorite", true)
+										.findAllAsync()
+								notes.addChangeListener { newNotes, _ ->
+									mainUi.onNotesChanging(newNotes)
+								}
+							}
+						}
+						radioButton {
+							text = "All"
+							setOnClickListener {
+								notes.removeAllChangeListeners()
+								notes = realm.where(Note::class.java).findAllAsync()
+								notes.addChangeListener { newNotes, _ ->
+									mainUi.onNotesChanging(newNotes)
+								}
+							}
+						}
+					}
+				}
+			}.show()
 			return true
 		}
 
@@ -45,6 +80,7 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onDestroy() {
 		super.onDestroy()
+		notes.removeAllChangeListeners()
 		realm.close()
 	}
 }

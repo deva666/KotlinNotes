@@ -5,4 +5,5 @@
     <item name="notes_item_favorite" type="id" />
     <item name="notes_item_date" type="id" />
     <item name="todo_add" type="id" />
+    <item name="main_toolbar" type="id" />
 </resources>
