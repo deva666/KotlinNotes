@@ -14,8 +14,3 @@ inline fun <reified T : Activity> Context.launchActivity(id: String, value: Stri
 	intent.putExtra(id, value)
 	this.startActivity(intent)
 }
-
-inline fun <reified T : Activity> Activity.launchActivityForResult(requestCode:Int) {
-	val intent = Intent(this, T::class.java)
-	this.startActivityForResult(intent, requestCode)
-}

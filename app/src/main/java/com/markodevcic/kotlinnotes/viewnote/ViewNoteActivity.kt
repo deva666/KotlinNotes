@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar
 import android.widget.TextView
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
+import com.markodevcic.kotlinnotes.utils.find
 import io.realm.Realm
 import java.text.DateFormat
 import java.util.*
@@ -22,15 +23,15 @@ class ViewNoteActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_view_note)
-		val toolbar = findViewById(R.id.toolbar) as Toolbar
+		val toolbar = find<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
-		noteTitle = findViewById(R.id.activity_view_note_title) as TextView
-		noteContent = findViewById(R.id.activity_view_note_content) as TextView
+		noteTitle = find<TextView>(R.id.activity_view_note_title)
+		noteContent = find<TextView>(R.id.activity_view_note_content)
 
 		realm = Realm.getDefaultInstance()
 
-		val fab = findViewById(R.id.fab) as FloatingActionButton
+		val fab = find<FloatingActionButton>(R.id.fab)
 		fab.setOnClickListener {
 			if (noteResult.isLoaded) {
 				realm.executeTransaction { r ->
@@ -53,8 +54,8 @@ class ViewNoteActivity : AppCompatActivity() {
 				noteTitle.text = "Taken at ${dateFormat.format(Date(note.createdAt))}"
 				noteContent.text = note.note
 				toolbar.title = note.title
-				val drawable = if (note.isFavorite) android.R.drawable.star_on
-				else android.R.drawable.star_off
+				val drawable = if (note.isFavorite) R.drawable.ic_favorite_white
+				else R.drawable.ic_favorite_border_white
 				fab.setImageDrawable(ContextCompat.getDrawable(this, drawable))
 			}
 		} else {
