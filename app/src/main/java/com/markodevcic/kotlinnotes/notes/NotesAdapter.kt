@@ -1,11 +1,12 @@
 package com.markodevcic.kotlinnotes.notes
 
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.markodevcic.kotlinnotes.data.Note
+import io.realm.RealmRecyclerViewAdapter
+import io.realm.RealmResults
 import org.jetbrains.anko.AnkoContext
 
-class NotesAdapter (private var notes: List<Note>) : RecyclerView.Adapter<NotesViewHolder>() {
+class NotesAdapter(private val notes: RealmResults<Note>, autoUpdate: Boolean) : RealmRecyclerViewAdapter<Note, NotesViewHolder>(notes, autoUpdate) {
 
 	override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
 		val note = notes[position]
@@ -18,10 +19,5 @@ class NotesAdapter (private var notes: List<Note>) : RecyclerView.Adapter<NotesV
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
 		return NotesViewHolder(NotesUi().createView(AnkoContext.create(parent.context, parent)))
-	}
-
-	fun onNotesChanging(newNotes: List<Note>) {
-		notes = newNotes
-		notifyDataSetChanged()
 	}
 }

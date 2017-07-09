@@ -7,15 +7,17 @@ import java.util.*
 open class Note : RealmObject() {
 
 	@PrimaryKey
-	var id: String = ""
+	var id = ""
 
-	var note: String = ""
+	var note = ""
 
-	var title: String = ""
+	var title = ""
 
-	var createdAt: Long = 0L
+	var createdAt = 0L
 
-	var isFavorite: Boolean = false
+	var isFavorite = false
+
+	var isDone = false
 
 	companion object {
 		fun newNote(): Note =  Note().apply {

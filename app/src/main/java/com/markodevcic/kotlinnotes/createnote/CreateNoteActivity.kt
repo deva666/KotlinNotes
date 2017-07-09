@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar
 import android.widget.EditText
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
+import com.markodevcic.kotlinnotes.utils.find
 import io.realm.Realm
 
 class CreateNoteActivity : AppCompatActivity() {
@@ -17,12 +18,12 @@ class CreateNoteActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_create_note)
-		val toolbar = findViewById(R.id.toolbar) as Toolbar
+		val toolbar = find<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
-		titleText = findViewById(R.id.create_note_title_text) as EditText
-		contentText = findViewById(R.id.create_note_content_text) as EditText
+		titleText = find<EditText>(R.id.create_note_title_text)
+		contentText = find<EditText>(R.id.create_note_content_text)
 
-		val fab = findViewById(R.id.fab) as FloatingActionButton
+		val fab = find<FloatingActionButton>(R.id.fab)
 		fab.setOnClickListener {
 			saveNote()
 			this.finish()

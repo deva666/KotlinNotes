@@ -6,4 +6,8 @@
     <item name="notes_item_date" type="id" />
     <item name="todo_add" type="id" />
     <item name="main_toolbar" type="id" />
+    <item name="drawer_layout" type="id"/>
+    <item name="button_host" type="id"/>
+    <item name="notes_item_btn_favorite" type="id"/>
+    <item name="notes_item_btn_done" type="id"/>
 </resources>

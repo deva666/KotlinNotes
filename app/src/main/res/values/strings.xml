@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KotlinNotes</string>
+    <string name="app_name">Kotlin Notes</string>
     <string name="action_filter">Filter</string>
     <string name="title_activity_view_note">View Note</string>
     <string name="large_text">
