@@ -10,4 +10,5 @@
     <item name="button_host" type="id"/>
     <item name="notes_item_btn_favorite" type="id"/>
     <item name="notes_item_btn_done" type="id"/>
+    <item name="recyclerview" type="id"/>
 </resources>

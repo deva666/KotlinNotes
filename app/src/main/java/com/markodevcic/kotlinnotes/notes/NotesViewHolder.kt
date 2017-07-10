@@ -41,13 +41,12 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			isExpanded = !isExpanded
 		}
 		if (note.isDone) {
-			titleText.setText(note.title, TextView.BufferType.SPANNABLE)
-			val spannable = titleText.text as Spannable
-			spannable.setSpan(StrikethroughSpan(), 0, note.title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+			setSpan(titleText, note.title)
+			setSpan(contentText, note.note)
 		} else {
 			titleText.text = note.title
+			contentText.text = note.note
 		}
-		contentText.text = note.note
 		val formatter = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
 		dateText.text = formatter.format(Date(note.createdAt))
 		if (note.isFavorite)
@@ -58,19 +57,34 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 		btnFavorite.setOnClickListener {
 			val realm = Realm.getDefaultInstance()
-			realm.executeTransaction {
-				note.isFavorite = !note.isFavorite
+			val id = note.id
+			realm.executeTransactionAsync {
+				val realmNote = it.where(Note::class.java)
+						.equalTo("id", id)
+						.findFirst()
+				realmNote.isFavorite = !realmNote.isFavorite
 			}
 			realm.close()
 		}
 
 		btnDone.setOnClickListener {
 			Realm.getDefaultInstance().use { r ->
-				r.executeTransaction {
-					note.isDone = !note.isDone
+				val id = note.id
+				r.executeTransactionAsync {
+					val realmNote = it.where(Note::class.java)
+							.equalTo("id", id)
+							.findFirst()
+
+					realmNote.isDone = !realmNote.isDone
 				}
 			}
 		}
+	}
+
+	private fun setSpan(textView: TextView, text: String) {
+		textView.setText(text, TextView.BufferType.SPANNABLE)
+		val spannable = textView.text as Spannable
+		spannable.setSpan(StrikethroughSpan(), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 	}
 }
 
@@ -128,14 +142,19 @@ class NotesUi : AnkoComponent<ViewGroup> {
 
 					imageButton {
 						id = R.id.notes_item_btn_favorite
-						imageResource = R.drawable.abc_ic_star_black_36dp
-					}.lparams(width = dip(36), height = dip(36))
+						imageResource = R.drawable.ic_star_black
+						backgroundColor = ContextCompat.getColor(ui.ctx, R.color.colorAccent)
+					}.lparams(width = dip(42), height = dip(42)) {
+						bottomMargin = dip(6)
+					}
 
 					imageButton {
 						id = R.id.notes_item_btn_done
-						imageResource = android.R.drawable.stat_sys_upload_done
-					}.lparams(width = dip(36), height = dip(36)) {
+						imageResource = R.drawable.ic_done_black
+						backgroundColor = ContextCompat.getColor(ui.ctx, R.color.colorAccent)
+					}.lparams(width = dip(42), height = dip(42)) {
 						leftMargin = dip(24)
+						bottomMargin = dip(6)
 					}
 				}
 			}

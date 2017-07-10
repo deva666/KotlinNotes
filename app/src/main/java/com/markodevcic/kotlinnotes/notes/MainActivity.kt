@@ -6,6 +6,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
@@ -18,7 +19,6 @@ import org.jetbrains.anko.setContentView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 	private lateinit var realm: Realm
-
 	private lateinit var mainUi: MainUi
 	private lateinit var notes: RealmResults<Note>
 	private lateinit var drawerLayout: DrawerLayout
@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 	override fun onDestroy() {
 		super.onDestroy()
-		notes.removeAllChangeListeners()
 		realm.close()
 	}
 
@@ -56,7 +55,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 	}
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
+		val results = when (item.itemId) {
+			R.id.menu_filder_pending -> realm.where(Note::class.java).equalTo("isDone", false).findAllAsync()
+			R.id.menu_filter_favorites -> realm.where(Note::class.java).equalTo("isDone", false).equalTo("isFavorite", true).findAllAsync()
+			R.id.menu_filter_done -> realm.where(Note::class.java).equalTo("isDone", true).findAllAsync()
+			R.id.menu_filter_all -> realm.where(Note::class.java).findAllAsync()
+			else -> throw IllegalArgumentException("unknown ID")
+		}
+		find<RecyclerView>(R.id.recyclerview).adapter = NotesAdapter(results, true)
 		drawerLayout.closeDrawer(GravityCompat.START)
 		return true
 	}

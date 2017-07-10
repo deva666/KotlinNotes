@@ -18,7 +18,7 @@ import org.jetbrains.anko.design.navigationView
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.drawerLayout
 
-class MainUi(private val notesAdapter: NotesAdapter) : AnkoComponent<MainActivity> {
+class MainUi(private var notesAdapter: NotesAdapter) : AnkoComponent<MainActivity> {
 
 	override fun createView(ui: AnkoContext<MainActivity>): View {
 		return with(ui) {
@@ -44,6 +44,7 @@ class MainUi(private val notesAdapter: NotesAdapter) : AnkoComponent<MainActivit
 					scrollView {
 						verticalPadding = dimen(R.dimen.activity_vertical_margin)
 						recyclerView {
+							id = R.id.recyclerview
 							layoutManager = LinearLayoutManager(ui.owner)
 							adapter = notesAdapter
 							addItemDecoration(DividerItemDecoration(ui.ctx, DividerItemDecoration.VERTICAL))
@@ -70,4 +71,5 @@ class MainUi(private val notesAdapter: NotesAdapter) : AnkoComponent<MainActivit
 			}
 		}
 	}
+
 }
