@@ -21,8 +21,8 @@ class NotesAdapter(private var notes: RealmResults<Note>, autoUpdate: Boolean) :
 		return NotesViewHolder(NotesUi().createView(AnkoContext.create(parent.context, parent)))
 	}
 
-	fun onResultsChanged(resuls: RealmResults<Note>) {
-		notes = resuls
+	fun onResultsChanged(results: RealmResults<Note>) {
+		notes = results
 		onResultsChanged(notes)
 	}
 }

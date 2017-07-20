@@ -1,9 +1,9 @@
 package com.markodevcic.kotlinnotes.createnote
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.View
 import android.widget.EditText
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
@@ -23,12 +23,12 @@ class CreateNoteActivity : AppCompatActivity() {
 		titleText = find<EditText>(R.id.create_note_title_text)
 		contentText = find<EditText>(R.id.create_note_content_text)
 
-		val fab = find<FloatingActionButton>(R.id.fab)
+		val fab = find<View>(R.id.fab)
 		fab.setOnClickListener {
 			saveNote()
 			this.finish()
 		}
-		supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 	}
 
 	private fun saveNote() {

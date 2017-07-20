@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 			R.id.menu_filter_all -> realm.where(Note::class.java).findAllAsync()
 			else -> throw IllegalArgumentException("unknown ID")
 		}
+		item.isChecked = true
 		notesAdapter.onResultsChanged(results)
 		drawerLayout.closeDrawer(GravityCompat.START)
 		return true
