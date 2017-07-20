@@ -13,7 +13,8 @@
         <activity
             android:name=".notes.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -21,19 +22,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".viewnote.ViewNoteActivity"
-            android:label="@string/title_activity_view_note"
-            android:parentActivityName=".notes.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.markodevcic.kotlinnotes.notes.MainActivity"/>
-        </activity>
-        <activity
             android:name=".createnote.CreateNoteActivity"
             android:label="@string/title_activity_create_note"
             android:parentActivityName=".notes.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.markodevcic.kotlinnotes.notes.MainActivity"/>

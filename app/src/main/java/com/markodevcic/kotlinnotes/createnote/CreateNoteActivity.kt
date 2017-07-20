@@ -26,13 +26,14 @@ class CreateNoteActivity : AppCompatActivity() {
 
 		val fab = find<View>(R.id.fab)
 		fab.setOnClickListener {
-			saveNote()
-			this.finish()
+			if (saveNote()) {
+				this.finish()
+			}
 		}
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 	}
 
-	private fun saveNote() {
+	private fun saveNote(): Boolean {
 		val title = titleText.text.toString()
 		val noteContent = contentText.text.toString()
 		if (isInputValid(title, "title") && isInputValid(noteContent, "note content")) {
@@ -44,7 +45,9 @@ class CreateNoteActivity : AppCompatActivity() {
 					r.copyToRealmOrUpdate(note)
 				}
 			}
+			return true
 		}
+		return false
 	}
 
 	private fun isInputValid(input: String?, inputTitle: String): Boolean {
