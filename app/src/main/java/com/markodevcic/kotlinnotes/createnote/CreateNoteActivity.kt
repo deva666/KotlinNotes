@@ -9,6 +9,7 @@ import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
 import com.markodevcic.kotlinnotes.utils.find
 import io.realm.Realm
+import org.jetbrains.anko.toast
 
 class CreateNoteActivity : AppCompatActivity() {
 
@@ -32,13 +33,25 @@ class CreateNoteActivity : AppCompatActivity() {
 	}
 
 	private fun saveNote() {
-		val realm = Realm.getDefaultInstance()
-		val note = Note.newNote()
-		note.title = titleText.text.toString()
-		note.note = contentText.text.toString()
-		realm.executeTransactionAsync { r ->
-			r.copyToRealmOrUpdate(note)
+		val title = titleText.text.toString()
+		val noteContent = contentText.text.toString()
+		if (isInputValid(title, "title") && isInputValid(noteContent, "note content")) {
+			Realm.getDefaultInstance().use { realm ->
+				val note = Note.newNote()
+				note.title = titleText.text.toString()
+				note.note = contentText.text.toString()
+				realm.executeTransactionAsync { r ->
+					r.copyToRealmOrUpdate(note)
+				}
+			}
 		}
-		realm.close()
+	}
+
+	private fun isInputValid(input: String?, inputTitle: String): Boolean {
+		if (input.isNullOrBlank()) {
+			this.toast("Input ${title} can not be blank")
+			return false
+		}
+		return true
 	}
 }
