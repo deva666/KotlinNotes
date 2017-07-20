@@ -6,7 +6,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
@@ -22,13 +21,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 	private lateinit var mainUi: MainUi
 	private lateinit var notes: RealmResults<Note>
 	private lateinit var drawerLayout: DrawerLayout
+	private lateinit var notesAdapter: NotesAdapter
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		realm = Realm.getDefaultInstance()
 		notes = realm.where(Note::class.java).findAllAsync()
-		mainUi = MainUi(NotesAdapter(notes, true))
+		notesAdapter = NotesAdapter(notes, true)
+		mainUi = MainUi(notesAdapter)
 		mainUi.setContentView(this)
 
 		drawerLayout = find<DrawerLayout>(R.id.drawer_layout)
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 			R.id.menu_filter_all -> realm.where(Note::class.java).findAllAsync()
 			else -> throw IllegalArgumentException("unknown ID")
 		}
-		find<RecyclerView>(R.id.recyclerview).adapter = NotesAdapter(results, true)
+		notesAdapter.onResultsChanged(results)
 		drawerLayout.closeDrawer(GravityCompat.START)
 		return true
 	}
