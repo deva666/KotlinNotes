@@ -6,7 +6,7 @@ import io.realm.RealmRecyclerViewAdapter
 import io.realm.RealmResults
 import org.jetbrains.anko.AnkoContext
 
-class NotesAdapter(private val notes: RealmResults<Note>, autoUpdate: Boolean) : RealmRecyclerViewAdapter<Note, NotesViewHolder>(notes, autoUpdate) {
+class NotesAdapter(private var notes: RealmResults<Note>, autoUpdate: Boolean) : RealmRecyclerViewAdapter<Note, NotesViewHolder>(notes, autoUpdate) {
 
 	override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
 		val note = notes[position]
@@ -19,5 +19,10 @@ class NotesAdapter(private val notes: RealmResults<Note>, autoUpdate: Boolean) :
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder {
 		return NotesViewHolder(NotesUi().createView(AnkoContext.create(parent.context, parent)))
+	}
+
+	fun onResultsChanged(resuls: RealmResults<Note>) {
+		notes = resuls
+		onResultsChanged(notes)
 	}
 }

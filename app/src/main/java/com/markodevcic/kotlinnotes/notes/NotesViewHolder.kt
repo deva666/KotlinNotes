@@ -142,7 +142,7 @@ class NotesUi : AnkoComponent<ViewGroup> {
 
 					imageButton {
 						id = R.id.notes_item_btn_favorite
-						imageResource = R.drawable.ic_star_black
+						imageResource = R.drawable.ic_star_white
 						backgroundColor = ContextCompat.getColor(ui.ctx, R.color.colorAccent)
 					}.lparams(width = dip(42), height = dip(42)) {
 						bottomMargin = dip(6)
@@ -150,7 +150,7 @@ class NotesUi : AnkoComponent<ViewGroup> {
 
 					imageButton {
 						id = R.id.notes_item_btn_done
-						imageResource = R.drawable.ic_done_black
+						imageResource = R.drawable.ic_done_white
 						backgroundColor = ContextCompat.getColor(ui.ctx, R.color.colorAccent)
 					}.lparams(width = dip(42), height = dip(42)) {
 						leftMargin = dip(24)
