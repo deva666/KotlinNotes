@@ -49,7 +49,7 @@ class CreateNoteActivity : AppCompatActivity() {
 
 	private fun isInputValid(input: String?, inputTitle: String): Boolean {
 		if (input.isNullOrBlank()) {
-			this.toast("Input ${title} can not be blank")
+			this.toast("Input $inputTitle can not be blank")
 			return false
 		}
 		return true
