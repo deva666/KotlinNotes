@@ -6,12 +6,10 @@ import android.text.Spannable
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.StrikethroughSpan
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
 import io.realm.Realm
@@ -24,22 +22,37 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 	private val contentText = itemView.find<TextView>(R.id.notes_item_content)
 	private val dateText = itemView.find<TextView>(R.id.notes_item_date)
 	private val favorite = itemView.find<ImageView>(R.id.notes_item_favorite)
-	private val buttonHost = itemView.find<LinearLayout>(R.id.button_host)
-	private val btnFavorite = itemView.find<ImageButton>(R.id.notes_item_btn_favorite)
-	private val btnDone = itemView.find<ImageButton>(R.id.notes_item_btn_done)
+	private val menuButton = itemView.find<ImageButton>(R.id.notes_item_menu)
 	private var isExpanded = false
 
 	fun bind(note: Note) {
-		itemView.setOnClickListener {
+		contentText.setOnClickListener {
 			if (isExpanded) {
 				contentText.maxLines = 1
-				buttonHost.visibility = View.GONE
 			} else {
 				contentText.maxLines = Int.MAX_VALUE
-				buttonHost.visibility = View.VISIBLE
 			}
 			isExpanded = !isExpanded
 		}
+		menuButton.setOnClickListener { view ->
+			val popupMenu = PopupMenu(view.context, view)
+			popupMenu.setOnMenuItemClickListener { item ->
+				when (item.itemId) {
+					R.id.action_favorite -> {
+						toggleIsFavorite(note.id)
+						true
+					}
+					R.id.action_done -> {
+						toggleIsDone(note.id)
+						true
+					}
+					else -> false
+				}
+			}
+			popupMenu.inflate(R.menu.menu_item_note)
+			popupMenu.show()
+		}
+
 		if (note.isDone) {
 			setSpan(titleText, note.title)
 			setSpan(contentText, note.note)
@@ -49,34 +62,31 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		}
 		val formatter = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault())
 		dateText.text = formatter.format(Date(note.createdAt))
-		if (note.isFavorite)
+		if (note.isFavorite) {
 			favorite.visibility = View.VISIBLE
-		else
+		} else {
 			favorite.visibility = View.INVISIBLE
-		buttonHost.visibility = if (isExpanded) View.VISIBLE else View.GONE
+		}
+	}
 
-		btnFavorite.setOnClickListener {
-			val realm = Realm.getDefaultInstance()
-			val id = note.id
+	private fun toggleIsFavorite(id: String) {
+		Realm.getDefaultInstance().use { realm ->
 			realm.executeTransactionAsync {
 				val realmNote = it.where(Note::class.java)
 						.equalTo("id", id)
 						.findFirst()
 				realmNote.isFavorite = !realmNote.isFavorite
 			}
-			realm.close()
 		}
+	}
 
-		btnDone.setOnClickListener {
-			Realm.getDefaultInstance().use { r ->
-				val id = note.id
-				r.executeTransactionAsync {
-					val realmNote = it.where(Note::class.java)
-							.equalTo("id", id)
-							.findFirst()
-
-					realmNote.isDone = !realmNote.isDone
-				}
+	private fun toggleIsDone(id: String) {
+		Realm.getDefaultInstance().use { realm ->
+			realm.executeTransactionAsync {
+				val realmNote = it.where(Note::class.java)
+						.equalTo("id", id)
+						.findFirst()
+				realmNote.isDone = !realmNote.isDone
 			}
 		}
 	}
@@ -95,11 +105,9 @@ class NotesUi : AnkoComponent<ViewGroup> {
 				lparams(width = matchParent, height = wrapContent)
 				orientation = LinearLayout.VERTICAL
 				padding = dip(12)
-
 				linearLayout {
 					lparams(width = matchParent, height = wrapContent)
 					orientation = LinearLayout.HORIZONTAL
-
 					textView {
 						textSize = 20f
 						id = R.id.notes_item_title
@@ -120,8 +128,23 @@ class NotesUi : AnkoComponent<ViewGroup> {
 					}.lparams {
 						leftMargin = dip(12)
 					}
-				}
 
+					linearLayout {
+						gravity = Gravity.END
+
+						imageButton {
+							id = R.id.notes_item_menu
+							imageResource = R.drawable.ic_action_more_vert
+							backgroundColor = ContextCompat.getColor(ui.ctx, android.R.color.transparent)
+						}.lparams(width = dip(24), height = dip(24)) {
+							margin = 0
+							padding = 0
+						}
+					}.lparams(width = matchParent) {
+						margin = 0
+						padding = 0
+					}
+				}
 
 				textView {
 					textSize = 16f
@@ -132,31 +155,6 @@ class NotesUi : AnkoComponent<ViewGroup> {
 					topMargin = dip(6)
 				}
 
-				linearLayout {
-					id = R.id.button_host
-					lparams {
-						topMargin = dip(18)
-						leftMargin = dip(18)
-					}
-					orientation = LinearLayout.HORIZONTAL
-
-					imageButton {
-						id = R.id.notes_item_btn_favorite
-						imageResource = R.drawable.ic_star_white
-						backgroundColor = ContextCompat.getColor(ui.ctx, R.color.colorAccent)
-					}.lparams(width = dip(42), height = dip(42)) {
-						bottomMargin = dip(6)
-					}
-
-					imageButton {
-						id = R.id.notes_item_btn_done
-						imageResource = R.drawable.ic_done_white
-						backgroundColor = ContextCompat.getColor(ui.ctx, R.color.colorAccent)
-					}.lparams(width = dip(42), height = dip(42)) {
-						leftMargin = dip(24)
-						bottomMargin = dip(6)
-					}
-				}
 			}
 		}
 	}

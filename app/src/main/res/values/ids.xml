@@ -11,4 +11,6 @@
     <item name="notes_item_btn_favorite" type="id"/>
     <item name="notes_item_btn_done" type="id"/>
     <item name="recyclerview" type="id"/>
+    <item name="no_items_text" type="id"/>
+    <item name="notes_item_menu" type="id"/>
 </resources>

@@ -43,11 +43,20 @@ class MainUi(private var notesAdapter: NotesAdapter) : AnkoComponent<MainActivit
 					}
 					scrollView {
 						verticalPadding = dimen(R.dimen.activity_vertical_margin)
+						linearLayout {
+							textView {
+								id = R.id.no_items_text
+								text = ui.ctx.getString(R.string.no_items)
+								visibility = View.GONE
+							}.lparams{
+								gravity = Gravity.CENTER_HORIZONTAL
+							}
 						recyclerView {
 							id = R.id.recyclerview
 							layoutManager = LinearLayoutManager(ui.owner)
 							adapter = notesAdapter
 							addItemDecoration(DividerItemDecoration(ui.ctx, DividerItemDecoration.VERTICAL))
+						}
 						}
 					}.lparams(width = matchParent, height = matchParent)
 

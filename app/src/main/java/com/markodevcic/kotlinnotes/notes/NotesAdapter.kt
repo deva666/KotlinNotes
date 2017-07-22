@@ -23,6 +23,6 @@ class NotesAdapter(private var notes: RealmResults<Note>, autoUpdate: Boolean) :
 
 	fun onResultsChanged(results: RealmResults<Note>) {
 		notes = results
-		onResultsChanged(notes)
+		super.updateData(notes)
 	}
 }
