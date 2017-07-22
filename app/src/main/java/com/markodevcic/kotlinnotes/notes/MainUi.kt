@@ -27,37 +27,34 @@ class MainUi(private var notesAdapter: NotesAdapter) : AnkoComponent<MainActivit
 				fitsSystemWindows = true
 
 				coordinatorLayout {
-						toolbar {
-							popupTheme = R.style.AppTheme_PopupOverlay
-							id = R.id.main_toolbar
-							backgroundResource = R.color.colorPrimary
-							setContentInsetsAbsolute(20, 0)
-							elevation = dip(4).toFloat()
-							setTitleTextColor(ContextCompat.getColor(ui.ctx, R.color.primary_text_default_material_dark))
-							title = ui.ctx.getString(R.string.app_name)
-						}.lparams(width = matchParent) {
-							val tv = TypedValue()
-							if (ui.owner.theme.resolveAttribute(R.attr.actionBarSize, tv, true)) {
-								height = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-							}
+					toolbar {
+						popupTheme = R.style.AppTheme_PopupOverlay
+						id = R.id.main_toolbar
+						backgroundResource = R.color.colorPrimary
+						setContentInsetsAbsolute(20, 0)
+						elevation = dip(4).toFloat()
+						setTitleTextColor(ContextCompat.getColor(ui.ctx, R.color.primary_text_default_material_dark))
+						title = ui.ctx.getString(R.string.app_name)
+					}.lparams(width = matchParent) {
+						val tv = TypedValue()
+						if (ui.owner.theme.resolveAttribute(R.attr.actionBarSize, tv, true)) {
+							height = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+						}
+					}
+					textView {
+						id = R.id.no_items_text
+						textResource = R.string.no_items
+						gravity = Gravity.CENTER_HORIZONTAL
+						visibility = View.GONE
 					}
 					scrollView {
 						verticalPadding = dimen(R.dimen.activity_vertical_margin)
-						linearLayout {
-							textView {
-								id = R.id.no_items_text
-								text = ui.ctx.getString(R.string.no_items)
-								visibility = View.GONE
-							}.lparams{
-								gravity = Gravity.CENTER_HORIZONTAL
+							recyclerView {
+								id = R.id.recyclerview
+								layoutManager = LinearLayoutManager(ui.owner)
+								adapter = notesAdapter
+								addItemDecoration(DividerItemDecoration(ui.ctx, DividerItemDecoration.VERTICAL))
 							}
-						recyclerView {
-							id = R.id.recyclerview
-							layoutManager = LinearLayoutManager(ui.owner)
-							adapter = notesAdapter
-							addItemDecoration(DividerItemDecoration(ui.ctx, DividerItemDecoration.VERTICAL))
-						}
-						}
 					}.lparams(width = matchParent, height = matchParent)
 
 					floatingActionButton {
