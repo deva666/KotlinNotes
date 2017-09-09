@@ -77,5 +77,4 @@ class MainUi(private var notesAdapter: NotesAdapter) : AnkoComponent<MainActivit
 			}
 		}
 	}
-
 }

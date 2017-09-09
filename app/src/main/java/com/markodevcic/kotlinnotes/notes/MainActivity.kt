@@ -6,11 +6,11 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
+import com.markodevcic.kotlinnotes.utils.findAsync
 import io.realm.Realm
 import io.realm.RealmResults
 import org.jetbrains.anko.find
@@ -28,25 +28,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 		super.onCreate(savedInstanceState)
 
 		realm = Realm.getDefaultInstance()
-		notes = realm.where(Note::class.java).findAllAsync()
+		notes = realm.findAsync { /*empty query, find all notes */ }
 		notesAdapter = NotesAdapter(notes, true)
 		mainUi = MainUi(notesAdapter)
 		mainUi.setContentView(this)
 
-		drawerLayout = find<DrawerLayout>(R.id.drawer_layout)
-		val toolbar = find<android.support.v7.widget.Toolbar>(R.id.main_toolbar)
+		drawerLayout = find(R.id.drawer_layout)
+		val toolbar = find<Toolbar>(R.id.main_toolbar)
 		setSupportActionBar(toolbar)
 
 		val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar,
 				R.string.app_name, R.string.app_name)
 		drawerLayout.addDrawerListener(toggle)
 		toggle.syncState()
-
-		val areNotesEmpty = realm.where(Note::class.java)
-				.count() == 0L
-		if (areNotesEmpty) {
-			find<TextView>(R.id.no_items_text).visibility = View.VISIBLE
-		}
 	}
 
 	override fun onDestroy() {
@@ -64,10 +58,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 	override fun onNavigationItemSelected(item: MenuItem): Boolean {
 		val results = when (item.itemId) {
-			R.id.menu_filder_pending -> realm.where(Note::class.java).equalTo("isDone", false).findAllAsync()
-			R.id.menu_filter_favorites -> realm.where(Note::class.java).equalTo("isDone", false).equalTo("isFavorite", true).findAllAsync()
-			R.id.menu_filter_done -> realm.where(Note::class.java).equalTo("isDone", true).findAllAsync()
-			R.id.menu_filter_all -> realm.where(Note::class.java).findAllAsync()
+			R.id.menu_filder_pending -> realm.findAsync<Note> { equalTo("isDone", false) }
+			R.id.menu_filter_favorites -> realm.findAsync {
+				equalTo("isDone", false)
+				equalTo("isFavorite", true)
+			}
+			R.id.menu_filter_done -> realm.findAsync { equalTo("isDone", true) }
+			R.id.menu_filter_all -> realm.findAsync {  }
 			else -> throw IllegalArgumentException("unknown ID")
 		}
 		supportActionBar?.title = item.title

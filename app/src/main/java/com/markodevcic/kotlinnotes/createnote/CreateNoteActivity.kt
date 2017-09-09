@@ -21,8 +21,8 @@ class CreateNoteActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_create_note)
 		val toolbar = find<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
-		titleText = find<EditText>(R.id.create_note_title_text)
-		contentText = find<EditText>(R.id.create_note_content_text)
+		titleText = find(R.id.create_note_title_text)
+		contentText = find(R.id.create_note_content_text)
 
 		val fab = find<View>(R.id.fab)
 		fab.setOnClickListener {
