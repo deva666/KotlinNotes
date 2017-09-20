@@ -1,19 +1,18 @@
 package com.markodevcic.kotlinnotes.notes
 
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.StrikethroughSpan
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.TextView
 import com.markodevcic.kotlinnotes.R
 import com.markodevcic.kotlinnotes.data.Note
 import io.realm.Realm
-import org.jetbrains.anko.*
+import org.jetbrains.anko.find
 import java.text.DateFormat
 import java.util.*
 
@@ -39,11 +38,11 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			popupMenu.setOnMenuItemClickListener { item ->
 				when (item.itemId) {
 					R.id.action_favorite -> {
-						toggleIsFavorite(note.id)
+						toggleIsFavorite(note)
 						true
 					}
 					R.id.action_done -> {
-						toggleIsDone(note.id)
+						toggleIsDone(note)
 						true
 					}
 					else -> false
@@ -69,24 +68,18 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		}
 	}
 
-	private fun toggleIsFavorite(id: String) {
+	private fun toggleIsFavorite(note: Note) {
 		Realm.getDefaultInstance().use { realm ->
-			realm.executeTransactionAsync {
-				val realmNote = it.where(Note::class.java)
-						.equalTo("id", id)
-						.findFirst()
-				realmNote.isFavorite = !realmNote.isFavorite
+			realm.executeTransaction {
+				note.isFavorite = !note.isFavorite
 			}
 		}
 	}
 
-	private fun toggleIsDone(id: String) {
+	private fun toggleIsDone(note: Note) {
 		Realm.getDefaultInstance().use { realm ->
-			realm.executeTransactionAsync {
-				val realmNote = it.where(Note::class.java)
-						.equalTo("id", id)
-						.findFirst()
-				realmNote.isDone = !realmNote.isDone
+			realm.executeTransaction {
+				note.isDone = !note.isDone
 			}
 		}
 	}
@@ -96,67 +89,4 @@ class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 		val spannable = textView.text as Spannable
 		spannable.setSpan(StrikethroughSpan(), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 	}
-}
-
-class NotesUi : AnkoComponent<ViewGroup> {
-	override fun createView(ui: AnkoContext<ViewGroup>): View {
-		return with(ui) {
-			linearLayout {
-				lparams(width = matchParent, height = wrapContent)
-				orientation = LinearLayout.VERTICAL
-				padding = dip(12)
-				linearLayout {
-					lparams(width = matchParent, height = wrapContent)
-					orientation = LinearLayout.HORIZONTAL
-					textView {
-						textSize = 20f
-						id = R.id.notes_item_title
-						textColor = ContextCompat.getColor(ui.ctx, android.R.color.black)
-					}.lparams(width = wrapContent, height = wrapContent)
-
-					imageView {
-						id = R.id.notes_item_favorite
-						imageResource = R.drawable.ic_star_black
-					}.lparams {
-						leftMargin = dip(12)
-						width = 35
-						height = 35
-					}
-
-					textView {
-						id = R.id.notes_item_date
-					}.lparams {
-						leftMargin = dip(12)
-					}
-
-					linearLayout {
-						gravity = Gravity.END
-
-						imageButton {
-							id = R.id.notes_item_menu
-							imageResource = R.drawable.ic_action_more_vert
-							backgroundColor = ContextCompat.getColor(ui.ctx, android.R.color.transparent)
-						}.lparams(width = dip(24), height = dip(24)) {
-							margin = 0
-							padding = 0
-						}
-					}.lparams(width = matchParent) {
-						margin = 0
-						padding = 0
-					}
-				}
-
-				textView {
-					textSize = 16f
-					id = R.id.notes_item_content
-					maxLines = 1
-					ellipsize = TextUtils.TruncateAt.END
-				}.lparams(width = wrapContent) {
-					topMargin = dip(6)
-				}
-
-			}
-		}
-	}
-
 }
